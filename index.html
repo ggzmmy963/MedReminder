@@ -49,7 +49,7 @@ p{margin:6px 0}
 .today .col{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px;min-width:0}
 .today .col.taken{border-left:4px solid var(--success)}.today .col.pending{border-left:4px solid var(--warn)}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:5px 9px;font-size:var(--small);font-weight:700;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:999px;padding:5px 9px;font-size:var(--small);font-weight:700;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
 .chip.on{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
 .chip.done{color:var(--success)}
 .toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0}
@@ -60,6 +60,9 @@ p{margin:6px 0}
 .field.wide{grid-column:1/-1}
 .field label{font-weight:700}
 .field input,.field select,.field textarea{width:100%;min-height:var(--input);border:1.5px solid var(--border);border-radius:9px;background:var(--surface2);padding:9px 11px;font-size:16px;min-width:0}
+.field input[type=checkbox],.field input[type=radio]{width:18px;height:18px;min-height:0;padding:0;border:0;border-radius:0;background:transparent;flex:0 0 auto;accent-color:var(--accent)}
+.field .chip input[type=checkbox]{margin:0;width:18px;height:18px}
+html[data-mode=elder] .field input[type=checkbox],html[data-mode=elder] .field input[type=radio],html[data-mode=elder] .field .chip input[type=checkbox]{width:22px;height:22px}
 .field textarea{min-height:78px;resize:vertical}
 .hint{color:var(--muted);font-size:var(--small)}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
@@ -357,7 +360,7 @@ function runOcr(){if(state.photoBusy)return;syncForm();var d=state.draft;if(!sta
 function renderHealth(){var h=state.health,p=h.profile;var hh='<section class="card"><h2>个人健康档案</h2><div class="healthGrid">'+
 '<div class="field"><label>年龄</label><input id="hAge" value="'+esc(p.age)+'"></div><div class="field"><label>性别</label><select id="hSex"><option value="">未填写</option><option value="female"'+(p.sex==='female'?' selected':'')+'>女</option><option value="male"'+(p.sex==='male'?' selected':'')+'>男</option><option value="other"'+(p.sex==='other'?' selected':'')+'>其他</option></select></div>'+
 '<div class="field"><label>体重（kg）</label><input id="hWeight" value="'+esc(p.weight)+'"></div><div class="field"><label>过敏史</label><input id="hAllergy" value="'+esc(p.allergies)+'"></div>'+
-'<div class="field wide"><label>基础疾病</label><div class="chips">'+['高血压','糖尿病','心脏病','脑卒中','慢性肾病','高血脂','哮喘/慢阻肺','甲状腺疾病','肝病','胃病'].map(function(x,i){return '<label class="chip"><input type="checkbox" data-cond="'+i+'" '+(p.conditions.indexOf(String(i))>=0?'checked':'')+' style="margin-right:4px">'+x+'</label>'}).join('')+'</div></div>'+
+'<div class="field wide"><label>基础疾病</label><div class="chips">'+['高血压','糖尿病','心脏病','脑卒中','慢性肾病','高血脂','哮喘/慢阻肺','甲状腺疾病','肝病','胃病'].map(function(x,i){return '<label class="chip"><input type="checkbox" data-cond="'+i+'" '+(p.conditions.indexOf(String(i))>=0?'checked':'')+'>'+x+'</label>'}).join('')+'</div></div>'+
 '<div class="field wide"><label>其他疾病</label><input id="hCustom" value="'+esc(p.customConditions)+'"></div></div></section>';
 hh+='<section class="card"><h2>说明书 / 处方单</h2><p class="hint">图片只保存在本机作为记录，不会上传给 AI。</p><label class="fileLabel">上传说明书/处方单<input id="hDocs" type="file" accept="image/*" multiple></label><p class="hint">最多 3 张，压缩后保存在本机。</p><div class="photoGrid">'+(state.health.documents||[]).map(function(d,i){return '<div class="photo"><img src="'+d.dataUrl+'"><button data-act="rmDoc" data-index="'+i+'">×</button></div>'}).join('')+'</div></section>';
 hh+=caseBook();return hh}
